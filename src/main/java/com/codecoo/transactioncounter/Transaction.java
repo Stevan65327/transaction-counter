@@ -3,8 +3,8 @@ package com.codecoo.transactioncounter;
 import java.util.Objects;
 
 public class Transaction {
-    private String userId;
-    private int amount;
+    private final String userId;
+    private final int amount;
 
     public Transaction(String userId, int amount) {
         this.userId = userId;
@@ -34,9 +34,9 @@ public class Transaction {
 
     @Override
     public String toString() {
-        return "Transaction{" +
+        return "Transaction: " +
                 "userId='" + userId + '\'' +
-                ", amount=" + amount +
-                '}';
+                ", amount=" + amount;
+
     }
 }

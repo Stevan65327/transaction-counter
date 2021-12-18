@@ -11,24 +11,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionReader {
+public class TransactionReader implements TransactionFileReader {
 
     public List<Transaction> readTransactions() throws IOException {
-        final Path csvTransactions = Paths.get("src/main/resources/transactions1.csv");
-        final List<String> csvTransactionsStrings = Files.readAllLines(csvTransactions);
-        final List<Transaction> csvTransactionsList = new ArrayList<>();
-        for (String str : csvTransactionsStrings) {
-            final String[] split = str.split(",");
-            csvTransactionsList.add(new Transaction(split[0], Integer.parseInt(split[1])));
-        }
+        List<Transaction> transactionListOne =
+                generateTransactionListFromCSV("src/main/resources/transactions1.csv");
+        List<Transaction> transactionListTwo =
+                generateTransactionListFromCSV("src/main/resources/transactions2.csv");
 
-        final Path csvTransactions2 = Paths.get("src/main/resources/transactions2.csv");
-        final List<String> csvTransactions2Strings = Files.readAllLines(csvTransactions2);
-        final List<Transaction> csvTransactions2List = new ArrayList<>();
-        for (String str : csvTransactions2Strings) {
-            final String[] split = str.split(",");
-            csvTransactions2List.add(new Transaction(split[0], Integer.parseInt(split[1])));
-        }
 
         final Path jsonTransactions = Paths.get("src/main/resources/transactions3.json");
         final String jsonTransactionsString = Files.readString(jsonTransactions);
@@ -36,9 +26,23 @@ public class TransactionReader {
         final List<Transaction> jsonTransactions3 = new Gson().fromJson(jsonTransactionsString, listType);
 
         final List<Transaction> transactions = new ArrayList<>();
-        transactions.addAll(csvTransactionsList);
-        transactions.addAll(csvTransactions2List);
+        transactions.addAll(transactionListOne);
+        transactions.addAll(transactionListTwo);
         transactions.addAll(jsonTransactions3);
         return transactions;
+    }
+
+    @Override
+    public List<Transaction> generateTransactionListFromCSV(String filePath) throws IOException {
+        final Path csvTransactions = Paths.get(filePath);
+        final List<String> csvTransactionsStrings = Files.readAllLines(csvTransactions);
+        final List<Transaction> transactionList = new ArrayList<>();
+        for (String str : csvTransactionsStrings) {
+            final String[] split = str.split(",");
+            transactionList.add(new Transaction(split[0], Integer.parseInt(split[1])));
+        }
+
+        return transactionList;
+
     }
 }
